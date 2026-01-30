@@ -1,0 +1,5 @@
+psutil>=5.9.0
+GPUtil>=1.4.0
+PyQt5>=5.15.0
+pyqtgraph>=0.13.0
+pywin32>=306
