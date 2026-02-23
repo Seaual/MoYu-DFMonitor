@@ -14,6 +14,7 @@ from collections import deque
 from monitor import SystemMonitor
 from .widgets import CircularProgress, MetricCard, StatCard
 from .styles import COLORS, CHART_STYLE
+import i18n
 
 
 class MonitorTab(QWidget):
@@ -55,19 +56,19 @@ class MonitorTab(QWidget):
         gauges_layout.setContentsMargins(48, 36, 48, 36)
         gauges_layout.setSpacing(60)
         
-        self.cpu_gauge = CircularProgress("🖥️ CPU", 120)
+        self.cpu_gauge = CircularProgress("🖥️ " + i18n._("monitor_cpu"), 120)
         self.cpu_gauge.set_colors("#0a84ff", "#5e5ce6")
         gauges_layout.addWidget(self.cpu_gauge, alignment=Qt.AlignCenter)
         
-        self.memory_gauge = CircularProgress("💾 内存", 120)
+        self.memory_gauge = CircularProgress("💾 " + i18n._("monitor_memory"), 120)
         self.memory_gauge.set_colors("#30d158", "#64d2ff")
         gauges_layout.addWidget(self.memory_gauge, alignment=Qt.AlignCenter)
         
-        self.gpu_gauge = CircularProgress("🎮 GPU", 120)
+        self.gpu_gauge = CircularProgress("🎮 " + i18n._("monitor_gpu"), 120)
         self.gpu_gauge.set_colors("#bf5af2", "#ff375f")
         gauges_layout.addWidget(self.gpu_gauge, alignment=Qt.AlignCenter)
         
-        self.gpu_mem_gauge = CircularProgress("📦 显存", 120)
+        self.gpu_mem_gauge = CircularProgress("📦 " + i18n._("monitor_vram"), 120)
         self.gpu_mem_gauge.set_colors("#ff9f0a", "#ff453a")
         gauges_layout.addWidget(self.gpu_mem_gauge, alignment=Qt.AlignCenter)
         
@@ -85,19 +86,22 @@ class MonitorTab(QWidget):
         chart_layout.setSpacing(16)
         
         chart_header = QHBoxLayout()
-        chart_title = QLabel("📈 使用率趋势")
-        chart_title.setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 600;")
-        chart_header.addWidget(chart_title)
+        self.chart_title = QLabel("📈 " + i18n._("monitor_trend"))
+        self.chart_title.setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 600;")
+        chart_header.addWidget(self.chart_title)
         chart_header.addStretch()
         
         legend = QHBoxLayout()
         legend.setSpacing(18)
-        legend.addWidget(QLabel("🔵 CPU"), alignment=Qt.AlignRight)
-        legend.itemAt(0).widget().setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
-        legend.addWidget(QLabel("🟢 内存"))
-        legend.itemAt(1).widget().setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
-        legend.addWidget(QLabel("🟣 GPU"))
-        legend.itemAt(2).widget().setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
+        self.legend_cpu = QLabel("🔵 " + i18n._("monitor_legend_cpu"))
+        self.legend_cpu.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
+        legend.addWidget(self.legend_cpu, alignment=Qt.AlignRight)
+        self.legend_mem = QLabel("🟢 " + i18n._("monitor_legend_mem"))
+        self.legend_mem.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
+        legend.addWidget(self.legend_mem)
+        self.legend_gpu = QLabel("🟣 " + i18n._("monitor_legend_gpu"))
+        self.legend_gpu.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
+        legend.addWidget(self.legend_gpu)
         chart_header.addLayout(legend)
         
         chart_layout.addLayout(chart_header)
@@ -112,22 +116,22 @@ class MonitorTab(QWidget):
         stats_layout = QVBoxLayout()
         stats_layout.setSpacing(14)
         
-        self.freq_card = StatCard("CPU 频率", "-", "⚡")
+        self.freq_card = StatCard(i18n._("monitor_freq"), "-", "⚡")
         stats_layout.addWidget(self.freq_card)
         
-        self.mem_card = StatCard("内存使用", "-", "💾")
+        self.mem_card = StatCard(i18n._("monitor_mem_use"), "-", "💾")
         stats_layout.addWidget(self.mem_card)
         
-        self.disk_read = StatCard("磁盘读取", "-", "📖")
+        self.disk_read = StatCard(i18n._("monitor_disk_read"), "-", "📖")
         stats_layout.addWidget(self.disk_read)
         
-        self.disk_write = StatCard("磁盘写入", "-", "✏️")
+        self.disk_write = StatCard(i18n._("monitor_disk_write"), "-", "✏️")
         stats_layout.addWidget(self.disk_write)
         
-        self.net_up = StatCard("网络上传", "-", "📤")
+        self.net_up = StatCard(i18n._("monitor_net_up"), "-", "📤")
         stats_layout.addWidget(self.net_up)
         
-        self.net_down = StatCard("网络下载", "-", "📥")
+        self.net_down = StatCard(i18n._("monitor_net_down"), "-", "📥")
         stats_layout.addWidget(self.net_down)
         
         stats_layout.addStretch()
@@ -153,28 +157,28 @@ class MonitorTab(QWidget):
         # GPU状态
         self.gpu_status = QLabel()
         if self.monitor.gpu_monitor.is_available():
-            self.gpu_status.setText("✅ GPU 已连接")
+            self.gpu_status.setText(i18n._("monitor_gpu_ok"))
             self.gpu_status.setStyleSheet("color: #30d158; font-size: 13px; font-weight: 500;")
         else:
-            self.gpu_status.setText("⚪ GPU 未检测到")
+            self.gpu_status.setText(i18n._("monitor_gpu_none"))
             self.gpu_status.setStyleSheet("color: rgba(255,255,255,0.4); font-size: 13px;")
         control_layout.addWidget(self.gpu_status)
         
         control_layout.addStretch()
         
-        interval_label = QLabel("⏱️ 采样间隔")
-        interval_label.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 13px;")
-        control_layout.addWidget(interval_label)
+        self.interval_label = QLabel("⏱️ " + i18n._("monitor_interval"))
+        self.interval_label.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 13px;")
+        control_layout.addWidget(self.interval_label)
         
         self.interval_combo = QComboBox()
-        self.interval_combo.addItems(['1 秒', '2 秒', '5 秒'])
+        self.interval_combo.addItems([i18n._("monitor_interval_1"), i18n._("monitor_interval_2"), i18n._("monitor_interval_5")])
         self.interval_combo.setFixedWidth(90)
         self.interval_combo.currentIndexChanged.connect(self._on_interval_changed)
         control_layout.addWidget(self.interval_combo)
         
         control_layout.addSpacing(20)
         
-        self.record_btn = QPushButton("🔴 开始记录")
+        self.record_btn = QPushButton(i18n._("monitor_record_start"))
         self.record_btn.setCheckable(True)
         self.record_btn.setFixedWidth(130)
         self.record_btn.clicked.connect(self._on_record_clicked)
@@ -226,11 +230,39 @@ class MonitorTab(QWidget):
     def _on_record_clicked(self, checked):
         self.is_recording = checked
         if checked:
-            self.record_btn.setText("⏹️ 停止记录")
+            self.record_btn.setText(i18n._("monitor_record_stop"))
             self.record_btn.setStyleSheet("background-color: #ff453a;")
         else:
-            self.record_btn.setText("🔴 开始记录")
+            self.record_btn.setText(i18n._("monitor_record_start"))
             self.record_btn.setStyleSheet("")
+    
+    def retranslate_ui(self):
+        """语言切换后刷新本 Tab 文字"""
+        self.cpu_gauge.title = "🖥️ " + i18n._("monitor_cpu")
+        self.cpu_gauge.update()
+        self.memory_gauge.title = "💾 " + i18n._("monitor_memory")
+        self.memory_gauge.update()
+        self.gpu_gauge.title = "🎮 " + i18n._("monitor_gpu")
+        self.gpu_gauge.update()
+        self.gpu_mem_gauge.title = "📦 " + i18n._("monitor_vram")
+        self.gpu_mem_gauge.update()
+        self.chart_title.setText("📈 " + i18n._("monitor_trend"))
+        self.legend_cpu.setText("🔵 " + i18n._("monitor_legend_cpu"))
+        self.legend_mem.setText("🟢 " + i18n._("monitor_legend_mem"))
+        self.legend_gpu.setText("🟣 " + i18n._("monitor_legend_gpu"))
+        self.freq_card.set_title(i18n._("monitor_freq"))
+        self.mem_card.set_title(i18n._("monitor_mem_use"))
+        self.disk_read.set_title(i18n._("monitor_disk_read"))
+        self.disk_write.set_title(i18n._("monitor_disk_write"))
+        self.net_up.set_title(i18n._("monitor_net_up"))
+        self.net_down.set_title(i18n._("monitor_net_down"))
+        self.gpu_status.setText(i18n._("monitor_gpu_ok") if self.monitor.gpu_monitor.is_available() else i18n._("monitor_gpu_none"))
+        self.interval_label.setText("⏱️ " + i18n._("monitor_interval"))
+        self.interval_combo.blockSignals(True)
+        self.interval_combo.clear()
+        self.interval_combo.addItems([i18n._("monitor_interval_1"), i18n._("monitor_interval_2"), i18n._("monitor_interval_5")])
+        self.interval_combo.blockSignals(False)
+        self.record_btn.setText(i18n._("monitor_record_stop") if self.is_recording else i18n._("monitor_record_start"))
     
     def _update_data(self):
         try:

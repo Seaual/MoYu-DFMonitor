@@ -20,6 +20,7 @@ from monitor.data_volume_monitor import DataVolumeMonitor
 from monitor import SystemMonitor
 from .widgets import CircularProgress, MetricCard, GlassCard
 from .styles import COLORS, CHART_STYLE
+import i18n
 
 
 class FootprintTab(QWidget):
@@ -76,26 +77,26 @@ class FootprintTab(QWidget):
         welcome_text = QVBoxLayout()
         welcome_text.setSpacing(10)
         
-        greeting = QLabel("👋 你好，欢迎回来")
-        greeting.setStyleSheet("""
+        self.greeting = QLabel(i18n._("fp_hello"))
+        self.greeting.setStyleSheet("""
             color: rgba(255, 255, 255, 0.65);
             font-size: 15px;
             font-weight: 500;
         """)
-        welcome_text.addWidget(greeting)
+        welcome_text.addWidget(self.greeting)
         
-        today_label = QLabel(datetime.now().strftime("%Y年%m月%d日"))
-        today_label.setStyleSheet("""
+        self.today_label = QLabel(datetime.now().strftime(i18n._("fp_today_date")))
+        self.today_label.setStyleSheet("""
             color: #ffffff;
             font-size: 32px;
             font-weight: 700;
             letter-spacing: -0.5px;
         """)
-        welcome_text.addWidget(today_label)
+        welcome_text.addWidget(self.today_label)
         
-        desc = QLabel("📊 以下是你今天的数字足迹摘要")
-        desc.setStyleSheet("color: rgba(255,255,255,0.5); font-size: 14px;")
-        welcome_text.addWidget(desc)
+        self.fp_desc = QLabel(i18n._("fp_today_summary_desc"))
+        self.fp_desc.setStyleSheet("color: rgba(255,255,255,0.5); font-size: 14px;")
+        welcome_text.addWidget(self.fp_desc)
         
         welcome_layout.addLayout(welcome_text)
         welcome_layout.addStretch()
@@ -120,9 +121,9 @@ class FootprintTab(QWidget):
             letter-spacing: -1px;
         """)
         energy_box.addWidget(self.hero_energy, alignment=Qt.AlignRight)
-        energy_unit = QLabel("Wh 能耗")
-        energy_unit.setStyleSheet("color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500;")
-        energy_box.addWidget(energy_unit, alignment=Qt.AlignRight)
+        self.energy_unit = QLabel(i18n._("fp_energy_wh"))
+        self.energy_unit.setStyleSheet("color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500;")
+        energy_box.addWidget(self.energy_unit, alignment=Qt.AlignRight)
         summary_layout.addLayout(energy_box)
         
         # 碳排放
@@ -141,9 +142,9 @@ class FootprintTab(QWidget):
             letter-spacing: -1px;
         """)
         carbon_box.addWidget(self.hero_carbon, alignment=Qt.AlignRight)
-        carbon_unit = QLabel("g CO₂")
-        carbon_unit.setStyleSheet("color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500;")
-        carbon_box.addWidget(carbon_unit, alignment=Qt.AlignRight)
+        self.carbon_unit = QLabel(i18n._("fp_carbon"))
+        self.carbon_unit.setStyleSheet("color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500;")
+        carbon_box.addWidget(self.carbon_unit, alignment=Qt.AlignRight)
         summary_layout.addLayout(carbon_box)
         
         welcome_layout.addLayout(summary_layout)
@@ -151,61 +152,61 @@ class FootprintTab(QWidget):
         layout.addWidget(welcome_frame)
         
         # ============ 实时性能指标 ============
-        section_title = QLabel("⚙️ 实时性能")
-        section_title.setStyleSheet("""
+        self.section_title = QLabel("⚙️ " + i18n._("fp_realtime"))
+        self.section_title.setStyleSheet("""
             color: rgba(255, 255, 255, 0.7);
             font-size: 14px;
             font-weight: 600;
             letter-spacing: 0.5px;
             padding-left: 4px;
         """)
-        layout.addWidget(section_title)
+        layout.addWidget(self.section_title)
         
         realtime_layout = QHBoxLayout()
         realtime_layout.setSpacing(18)
         
         # 四个主要指标
-        self.flops_card = MetricCard("计算性能", "🔥", "#ff9f0a")
+        self.flops_card = MetricCard(i18n._("fp_compute"), "🔥", "#ff9f0a")
         realtime_layout.addWidget(self.flops_card)
         
-        self.mips_card = MetricCard("指令执行", "⚡", "#30d158")
+        self.mips_card = MetricCard(i18n._("fp_instructions"), "⚡", "#30d158")
         realtime_layout.addWidget(self.mips_card)
         
-        self.power_card = MetricCard("实时功耗", "🔌", "#ff453a")
+        self.power_card = MetricCard(i18n._("fp_power"), "🔌", "#ff453a")
         realtime_layout.addWidget(self.power_card)
         
-        self.data_card = MetricCard("数据生成", "💾", "#bf5af2")
+        self.data_card = MetricCard(i18n._("fp_data_gen"), "💾", "#bf5af2")
         realtime_layout.addWidget(self.data_card)
         
         layout.addLayout(realtime_layout)
         
         # ============ DF-LCA 指标 ============
-        df_title = QLabel("📐 单位数据指标 (Per-Unit-Data)")
-        df_title.setStyleSheet("""
+        self.df_title = QLabel("📐 " + i18n._("fp_per_unit"))
+        self.df_title.setStyleSheet("""
             color: rgba(255, 255, 255, 0.7);
             font-size: 14px;
             font-weight: 600;
             letter-spacing: 0.5px;
             padding-left: 4px;
         """)
-        layout.addWidget(df_title)
+        layout.addWidget(self.df_title)
         
         df_layout = QHBoxLayout()
         df_layout.setSpacing(18)
         
-        self.tpd_card = MetricCard("TPD", "⏱️", "#0a84ff")
+        self.tpd_card = MetricCard(i18n._("fp_tpd"), "⏱️", "#0a84ff")
         df_layout.addWidget(self.tpd_card)
         
-        self.mpd_card = MetricCard("MPD", "📊", "#5e5ce6")
+        self.mpd_card = MetricCard(i18n._("fp_mpd"), "📊", "#5e5ce6")
         df_layout.addWidget(self.mpd_card)
         
-        self.wpd_card = MetricCard("WPD", "⚡", "#ff9f0a")
+        self.wpd_card = MetricCard(i18n._("fp_wpd"), "⚡", "#ff9f0a")
         df_layout.addWidget(self.wpd_card)
         
-        self.cpd_card = MetricCard("CPD", "🌱", "#30d158")
+        self.cpd_card = MetricCard(i18n._("fp_cpd"), "🌱", "#30d158")
         df_layout.addWidget(self.cpd_card)
         
-        self.er_card = MetricCard("Effort", "📈", "#bf5af2")
+        self.er_card = MetricCard(i18n._("fp_effort"), "📈", "#bf5af2")
         df_layout.addWidget(self.er_card)
         
         layout.addLayout(df_layout)
@@ -222,26 +223,26 @@ class FootprintTab(QWidget):
         chart_layout.setSpacing(16)
         
         chart_header = QHBoxLayout()
-        chart_title = QLabel("📉 性能趋势")
-        chart_title.setStyleSheet("""
+        self.trend_chart_title = QLabel("📉 " + i18n._("fp_trend"))
+        self.trend_chart_title.setStyleSheet("""
             color: #ffffff;
             font-size: 16px;
             font-weight: 600;
         """)
-        chart_header.addWidget(chart_title)
+        chart_header.addWidget(self.trend_chart_title)
         chart_header.addStretch()
         
         # 图例
         legend_layout = QHBoxLayout()
         legend_layout.setSpacing(20)
         
-        power_legend = QLabel("🔴 功耗")
-        power_legend.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
-        legend_layout.addWidget(power_legend)
+        self.power_legend = QLabel("🔴 " + i18n._("fp_legend_power"))
+        self.power_legend.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
+        legend_layout.addWidget(self.power_legend)
         
-        flops_legend = QLabel("🔵 GFLOPS")
-        flops_legend.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
-        legend_layout.addWidget(flops_legend)
+        self.flops_legend = QLabel("🔵 " + i18n._("fp_legend_gflops"))
+        self.flops_legend.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 12px;")
+        legend_layout.addWidget(self.flops_legend)
         
         chart_header.addLayout(legend_layout)
         chart_layout.addLayout(chart_header)
@@ -260,15 +261,15 @@ class FootprintTab(QWidget):
         disk_layout.setContentsMargins(24, 22, 24, 22)
         disk_layout.setSpacing(14)
         
-        disk_title = QLabel("💿 存储空间")
-        disk_title.setStyleSheet("""
+        self.disk_title = QLabel("💿 " + i18n._("fp_storage"))
+        self.disk_title.setStyleSheet("""
             color: #ffffff;
             font-size: 16px;
             font-weight: 600;
         """)
-        disk_layout.addWidget(disk_title)
+        disk_layout.addWidget(self.disk_title)
         
-        self.disk_label = QLabel("已使用 - / -")
+        self.disk_label = QLabel(i18n._("fp_used") + " - / -")
         self.disk_label.setStyleSheet("color: rgba(255,255,255,0.6); font-size: 14px;")
         disk_layout.addWidget(self.disk_label)
         
@@ -281,7 +282,7 @@ class FootprintTab(QWidget):
         
         self.disk_table = QTableWidget()
         self.disk_table.setColumnCount(3)
-        self.disk_table.setHorizontalHeaderLabels(['分区', '已用', '使用率'])
+        self.disk_table.setHorizontalHeaderLabels([i18n._("fp_disk_partition"), i18n._("fp_disk_used"), i18n._("fp_disk_usage")])
         self.disk_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.disk_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
         self.disk_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
@@ -306,16 +307,16 @@ class FootprintTab(QWidget):
         footer_layout = QHBoxLayout(footer)
         footer_layout.setContentsMargins(24, 16, 24, 16)
         
-        formula = QLabel(
-            "<span style='color: rgba(255,255,255,0.5);'>📝 DF-LCA 公式  </span>"
-            "<span style='color: #0a84ff;'>TPD</span><span style='color: rgba(255,255,255,0.4);'> = Time÷Data  </span>"
-            "<span style='color: #5e5ce6;'>MPD</span><span style='color: rgba(255,255,255,0.4);'> = Instructions÷Data  </span>"
-            "<span style='color: #ff9f0a;'>WPD</span><span style='color: rgba(255,255,255,0.4);'> = Energy÷Data  </span>"
-            "<span style='color: #30d158;'>CPD</span><span style='color: rgba(255,255,255,0.4);'> = Carbon÷Data  </span>"
-            "<span style='color: #bf5af2;'>ER</span><span style='color: rgba(255,255,255,0.4);'> = α·TPD + β·WPD + γ·MPD</span>"
+        self.formula_label = QLabel(
+            f"<span style='color: rgba(255,255,255,0.5);'>{i18n._('fp_formula_intro')}</span>"
+            f"<span style='color: #0a84ff;'>{i18n._('fp_formula_tpd')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_tpd_eq')}</span>"
+            f"<span style='color: #5e5ce6;'>{i18n._('fp_formula_mpd')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_mpd_eq')}</span>"
+            f"<span style='color: #ff9f0a;'>{i18n._('fp_formula_wpd')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_wpd_eq')}</span>"
+            f"<span style='color: #30d158;'>{i18n._('fp_formula_cpd')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_cpd_eq')}</span>"
+            f"<span style='color: #bf5af2;'>{i18n._('fp_formula_er')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_er_eq')}</span>"
         )
-        formula.setStyleSheet("font-size: 12px;")
-        footer_layout.addWidget(formula)
+        self.formula_label.setStyleSheet("font-size: 12px;")
+        footer_layout.addWidget(self.formula_label)
         
         layout.addWidget(footer)
         
@@ -398,7 +399,7 @@ class FootprintTab(QWidget):
             data_stats = self.data_monitor.update()
             self.data_card.set_value(
                 f"{data_stats['total_generated_mb']:.1f}",
-                "MB 今日"
+                i18n._("fp_mb_today")
             )
             
             # DF-LCA 指标
@@ -406,7 +407,7 @@ class FootprintTab(QWidget):
             self.mpd_card.set_value(f"{indicators['mpd']:.1f}", "MI/MB")
             self.wpd_card.set_value(f"{indicators['wpd']*1000:.2f}", "mWh/MB")
             self.cpd_card.set_value(f"{indicators['cpd']:.3f}", "gCO₂/MB")
-            self.er_card.set_value(f"{indicators['effort_rate']:.3f}", "综合成本")
+            self.er_card.set_value(f"{indicators['effort_rate']:.3f}", i18n._("fp_effort_unit"))
             
             # 更新图表
             t = len(self.time_history)
@@ -426,7 +427,7 @@ class FootprintTab(QWidget):
             disk = self.data_monitor.get_total_disk_usage()
             
             self.disk_label.setText(
-                f"已使用 {disk['used_gb']:.0f} GB / {disk['total_gb']:.0f} GB"
+                i18n._("fp_disk_used_format").format(used=disk["used_gb"], total=disk["total_gb"])
             )
             self.disk_progress.setValue(int(disk['percent']))
             
@@ -448,6 +449,39 @@ class FootprintTab(QWidget):
         
         except Exception as e:
             print(f"磁盘刷新错误: {e}")
+    
+    def retranslate_ui(self):
+        """语言切换后刷新本 Tab 文字"""
+        self.greeting.setText(i18n._("fp_hello"))
+        self.today_label.setText(datetime.now().strftime(i18n._("fp_today_date")))
+        self.fp_desc.setText(i18n._("fp_today_summary_desc"))
+        self.energy_unit.setText(i18n._("fp_energy_wh"))
+        self.carbon_unit.setText(i18n._("fp_carbon"))
+        self.section_title.setText("⚙️ " + i18n._("fp_realtime"))
+        self.df_title.setText("📐 " + i18n._("fp_per_unit"))
+        self.flops_card.set_title(i18n._("fp_compute"))
+        self.mips_card.set_title(i18n._("fp_instructions"))
+        self.power_card.set_title(i18n._("fp_power"))
+        self.data_card.set_title(i18n._("fp_data_gen"))
+        self.tpd_card.set_title(i18n._("fp_tpd"))
+        self.mpd_card.set_title(i18n._("fp_mpd"))
+        self.wpd_card.set_title(i18n._("fp_wpd"))
+        self.cpd_card.set_title(i18n._("fp_cpd"))
+        self.er_card.set_title(i18n._("fp_effort"))
+        self.trend_chart_title.setText("📉 " + i18n._("fp_trend"))
+        self.power_legend.setText("🔴 " + i18n._("fp_legend_power"))
+        self.flops_legend.setText("🔵 " + i18n._("fp_legend_gflops"))
+        self.disk_title.setText("💿 " + i18n._("fp_storage"))
+        self.disk_table.setHorizontalHeaderLabels([i18n._("fp_disk_partition"), i18n._("fp_disk_used"), i18n._("fp_disk_usage")])
+        self.formula_label.setText(
+            f"<span style='color: rgba(255,255,255,0.5);'>{i18n._('fp_formula_intro')}</span>"
+            f"<span style='color: #0a84ff;'>{i18n._('fp_formula_tpd')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_tpd_eq')}</span>"
+            f"<span style='color: #5e5ce6;'>{i18n._('fp_formula_mpd')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_mpd_eq')}</span>"
+            f"<span style='color: #ff9f0a;'>{i18n._('fp_formula_wpd')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_wpd_eq')}</span>"
+            f"<span style='color: #30d158;'>{i18n._('fp_formula_cpd')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_cpd_eq')}</span>"
+            f"<span style='color: #bf5af2;'>{i18n._('fp_formula_er')}</span><span style='color: rgba(255,255,255,0.4);'>{i18n._('fp_formula_er_eq')}</span>"
+        )
+        self._refresh_disk()
     
     def start_monitoring(self):
         if not self.update_timer.isActive():

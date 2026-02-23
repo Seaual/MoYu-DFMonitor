@@ -17,6 +17,8 @@ from collections import defaultdict
 from tracker import ActivityManager
 from .widgets import MetricCard, StatCard
 from .styles import COLORS, CHART_STYLE
+import i18n
+import i18n
 
 
 class ActivityTab(QWidget):
@@ -57,9 +59,9 @@ class ActivityTab(QWidget):
         site_icon = QLabel("🌐")
         site_icon.setStyleSheet("font-size: 24px;")
         site_header.addWidget(site_icon)
-        site_label = QLabel("当前浏览")
-        site_label.setStyleSheet("color: rgba(255,255,255,0.55); font-size: 12px; font-weight: 600; letter-spacing: 1px;")
-        site_header.addWidget(site_label)
+        self.site_label = QLabel(i18n._("activity_current_browse"))
+        self.site_label.setStyleSheet("color: rgba(255,255,255,0.55); font-size: 12px; font-weight: 600; letter-spacing: 1px;")
+        site_header.addWidget(self.site_label)
         site_header.addStretch()
         site_layout.addLayout(site_header)
         
@@ -67,7 +69,7 @@ class ActivityTab(QWidget):
         self.current_site.setStyleSheet("color: #0a84ff; font-size: 20px; font-weight: 700;")
         site_layout.addWidget(self.current_site)
         
-        self.duration_label = QLabel("⏱️ 持续 -")
+        self.duration_label = QLabel("⏱️ " + i18n._("activity_duration") + " -")
         self.duration_label.setStyleSheet("color: rgba(255,255,255,0.45); font-size: 13px;")
         site_layout.addWidget(self.duration_label)
         
@@ -84,9 +86,9 @@ class ActivityTab(QWidget):
         summary_icon = QLabel("📊")
         summary_icon.setStyleSheet("font-size: 24px;")
         summary_header.addWidget(summary_icon)
-        summary_label = QLabel("今日摘要")
-        summary_label.setStyleSheet("color: rgba(255,255,255,0.55); font-size: 12px; font-weight: 600; letter-spacing: 1px;")
-        summary_header.addWidget(summary_label)
+        self.summary_label = QLabel(i18n._("activity_today_summary"))
+        self.summary_label.setStyleSheet("color: rgba(255,255,255,0.55); font-size: 12px; font-weight: 600; letter-spacing: 1px;")
+        summary_header.addWidget(self.summary_label)
         summary_header.addStretch()
         
         self.date_edit = QDateEdit()
@@ -107,11 +109,12 @@ class ActivityTab(QWidget):
         time_header = QHBoxLayout()
         time_header.addWidget(QLabel("⏰"))
         time_header.itemAt(0).widget().setStyleSheet("font-size: 16px;")
-        time_header.addWidget(QLabel("使用时长"))
-        time_header.itemAt(1).widget().setStyleSheet("color: rgba(255,255,255,0.55); font-size: 11px;")
+        self.usage_time_label = QLabel(i18n._("activity_usage_time"))
+        self.usage_time_label.setStyleSheet("color: rgba(255,255,255,0.55); font-size: 11px;")
+        time_header.addWidget(self.usage_time_label)
         time_header.addStretch()
         time_box.addLayout(time_header)
-        self.total_time = QLabel("0小时0分")
+        self.total_time = QLabel(i18n._("activity_hours_mins").format(hours=0, mins=0))
         self.total_time.setStyleSheet("color: #30d158; font-size: 18px; font-weight: 700;")
         time_box.addWidget(self.total_time)
         stats_row.addLayout(time_box)
@@ -122,8 +125,9 @@ class ActivityTab(QWidget):
         app_header = QHBoxLayout()
         app_header.addWidget(QLabel("📱"))
         app_header.itemAt(0).widget().setStyleSheet("font-size: 16px;")
-        app_header.addWidget(QLabel("应用数量"))
-        app_header.itemAt(1).widget().setStyleSheet("color: rgba(255,255,255,0.55); font-size: 11px;")
+        self.app_header_label = QLabel(i18n._("activity_app_count"))
+        self.app_header_label.setStyleSheet("color: rgba(255,255,255,0.55); font-size: 11px;")
+        app_header.addWidget(self.app_header_label)
         app_header.addStretch()
         app_box.addLayout(app_header)
         self.app_count = QLabel("0")
@@ -137,8 +141,9 @@ class ActivityTab(QWidget):
         site_header2 = QHBoxLayout()
         site_header2.addWidget(QLabel("🔗"))
         site_header2.itemAt(0).widget().setStyleSheet("font-size: 16px;")
-        site_header2.addWidget(QLabel("网站数量"))
-        site_header2.itemAt(1).widget().setStyleSheet("color: rgba(255,255,255,0.55); font-size: 11px;")
+        self.site_header_label = QLabel(i18n._("activity_site_count"))
+        self.site_header_label.setStyleSheet("color: rgba(255,255,255,0.55); font-size: 11px;")
+        site_header2.addWidget(self.site_header_label)
         site_header2.addStretch()
         site_box.addLayout(site_header2)
         self.site_count = QLabel("0")
@@ -161,14 +166,14 @@ class ActivityTab(QWidget):
         timeline_layout.setSpacing(16)
         
         timeline_header = QHBoxLayout()
-        timeline_title = QLabel("📅 今日使用时间分布")
-        timeline_title.setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 600;")
-        timeline_header.addWidget(timeline_title)
+        self.timeline_title = QLabel("📅 " + i18n._("activity_time_dist"))
+        self.timeline_title.setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 600;")
+        timeline_header.addWidget(self.timeline_title)
         timeline_header.addStretch()
         
-        timeline_hint = QLabel("按小时统计")
-        timeline_hint.setStyleSheet("color: rgba(255,255,255,0.4); font-size: 12px;")
-        timeline_header.addWidget(timeline_hint)
+        self.timeline_hint = QLabel(i18n._("activity_by_hour"))
+        self.timeline_hint.setStyleSheet("color: rgba(255,255,255,0.4); font-size: 12px;")
+        timeline_header.addWidget(self.timeline_hint)
         
         timeline_layout.addLayout(timeline_header)
         
@@ -196,9 +201,9 @@ class ActivityTab(QWidget):
         chart_layout.setContentsMargins(24, 22, 24, 22)
         chart_layout.setSpacing(16)
         
-        chart_title = QLabel("📊 应用使用时长排行")
-        chart_title.setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 600;")
-        chart_layout.addWidget(chart_title)
+        self.app_chart_title = QLabel("📊 " + i18n._("activity_app_ranking"))
+        self.app_chart_title.setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 600;")
+        chart_layout.addWidget(self.app_chart_title)
         
         self.app_chart = pg.PlotWidget()
         self._style_bar_chart(self.app_chart)
@@ -222,9 +227,9 @@ class ActivityTab(QWidget):
         web_chart_layout.setContentsMargins(24, 22, 24, 22)
         web_chart_layout.setSpacing(16)
         
-        web_chart_title = QLabel("🌐 网站访问时长排行")
-        web_chart_title.setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 600;")
-        web_chart_layout.addWidget(web_chart_title)
+        self.web_chart_title = QLabel("🌐 " + i18n._("activity_site_ranking"))
+        self.web_chart_title.setStyleSheet("color: #ffffff; font-size: 16px; font-weight: 600;")
+        web_chart_layout.addWidget(self.web_chart_title)
         
         self.web_chart = pg.PlotWidget()
         self._style_bar_chart(self.web_chart)
@@ -287,10 +292,10 @@ class ActivityTab(QWidget):
             current_app = result.get('current_app')
             if current_app:
                 self.duration_label.setText(
-                    f"⏱️ 持续 {self._format_duration(current_app.get('duration', 0))}"
+                    f"⏱️ {i18n._('activity_duration')} {self._format_duration(current_app.get('duration', 0))}"
                 )
             else:
-                self.duration_label.setText("⏱️ 持续 -")
+                self.duration_label.setText("⏱️ " + i18n._("activity_duration") + " -")
             
             current_site = result.get('current_site')
             if current_site:
@@ -326,7 +331,8 @@ class ActivityTab(QWidget):
         total = summary['total_app_time']
         hours = int(total // 3600)
         mins = int((total % 3600) // 60)
-        self.total_time.setText(f"{hours}小时{mins}分")
+        fmt = i18n._("activity_hours_mins")
+        self.total_time.setText(fmt.format(hours=hours, mins=mins))
         self.app_count.setText(str(summary['app_count']))
         self.site_count.setText(str(summary['site_count']))
         
@@ -369,7 +375,7 @@ class ActivityTab(QWidget):
         max_mins = max(widths) if widths else 1
         self.app_chart.setXRange(0, max_mins * 1.1)
         self.app_chart.setYRange(-0.5, len(data) - 0.5)
-        self.app_chart.setLabel('bottom', '使用时长 (分钟)')
+        self.app_chart.setLabel('bottom', i18n._('activity_usage_mins'))
     
     def _update_web_chart(self, data):
         """更新网站访问直方图"""
@@ -396,7 +402,7 @@ class ActivityTab(QWidget):
         max_mins = max(widths) if widths else 1
         self.web_chart.setXRange(0, max_mins * 1.1)
         self.web_chart.setYRange(-0.5, len(data) - 0.5)
-        self.web_chart.setLabel('bottom', '访问时长 (分钟)')
+        self.web_chart.setLabel('bottom', i18n._('activity_visit_mins'))
     
     def _update_timeline_chart(self):
         """更新时间线直方图 - 按小时统计使用时间"""
@@ -448,7 +454,33 @@ class ActivityTab(QWidget):
         
         max_val = max(values) if max(values) > 0 else 60
         self.timeline_chart.setYRange(0, max_val * 1.1)
-        self.timeline_chart.setLabel('left', '使用时长 (分钟)')
+        self.timeline_chart.setLabel('left', i18n._('activity_timeline_ylabel'))
+    
+    def retranslate_ui(self):
+        """语言切换后刷新本 Tab 文字"""
+        self.site_label.setText(i18n._("activity_current_browse"))
+        result = self.activity_manager.update()
+        current_app = result.get("current_app")
+        if current_app:
+            self.duration_label.setText(f"⏱️ {i18n._('activity_duration')} {self._format_duration(current_app.get('duration', 0))}")
+        else:
+            self.duration_label.setText("⏱️ " + i18n._("activity_duration") + " -")
+        self.summary_label.setText(i18n._("activity_today_summary"))
+        self.usage_time_label.setText(i18n._("activity_usage_time"))
+        self.app_header_label.setText(i18n._("activity_app_count"))
+        self.site_header_label.setText(i18n._("activity_site_count"))
+        self.timeline_title.setText("📅 " + i18n._("activity_time_dist"))
+        self.timeline_hint.setText(i18n._("activity_by_hour"))
+        self.app_chart_title.setText("📊 " + i18n._("activity_app_ranking"))
+        self.web_chart_title.setText("🌐 " + i18n._("activity_site_ranking"))
+        summary = self.activity_manager.get_summary()
+        total = summary["total_app_time"]
+        hours = int(total // 3600)
+        mins = int((total % 3600) // 60)
+        self.total_time.setText(i18n._("activity_hours_mins").format(hours=hours, mins=mins))
+        self.app_chart.setLabel("bottom", i18n._("activity_usage_mins"))
+        self.web_chart.setLabel("bottom", i18n._("activity_visit_mins"))
+        self.timeline_chart.setLabel("left", i18n._("activity_timeline_ylabel"))
     
     def start_tracking(self):
         if not self.update_timer.isActive():

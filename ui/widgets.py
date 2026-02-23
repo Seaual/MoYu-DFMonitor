@@ -190,14 +190,14 @@ class MetricCard(QFrame):
             icon_label.setStyleSheet(f"font-size: 22px;")
             header.addWidget(icon_label)
         
-        title_label = QLabel(title.upper())
-        title_label.setStyleSheet("""
+        self.title_label = QLabel(title.upper())
+        self.title_label.setStyleSheet("""
             color: rgba(255, 255, 255, 0.55);
             font-size: 11px;
             font-weight: 600;
             letter-spacing: 1.2px;
         """)
-        header.addWidget(title_label)
+        header.addWidget(self.title_label)
         header.addStretch()
         layout.addLayout(header)
         
@@ -226,6 +226,9 @@ class MetricCard(QFrame):
         self.value_label.setText(value)
         if subtitle:
             self.subtitle_label.setText(subtitle)
+    
+    def set_title(self, title: str):
+        self.title_label.setText(title.upper())
     
     def set_accent_value(self, value: str, subtitle: str = ""):
         """使用强调色显示数值"""
@@ -265,9 +268,9 @@ class StatCard(QFrame):
             icon_label.setStyleSheet("font-size: 18px;")
             header.addWidget(icon_label)
         
-        title_label = QLabel(title)
-        title_label.setStyleSheet("color: rgba(255,255,255,0.55); font-size: 12px; font-weight: 500;")
-        header.addWidget(title_label)
+        self.title_label = QLabel(title)
+        self.title_label.setStyleSheet("color: rgba(255,255,255,0.55); font-size: 12px; font-weight: 500;")
+        header.addWidget(self.title_label)
         header.addStretch()
         layout.addLayout(header)
         
@@ -281,6 +284,9 @@ class StatCard(QFrame):
         layout.addWidget(self.value_label)
         
         layout.addStretch()
+    
+    def set_title(self, title: str):
+        self.title_label.setText(title)
     
     def set_value(self, value: str):
         self.value_label.setText(value)
